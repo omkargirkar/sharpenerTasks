@@ -1,25 +1,23 @@
 const express = require('express');
+const studentRoutes = require('./routes/students');
+const courseRoutes = require('./routes/courses');
+
 const app = express();
+const PORT = 4000;
 
-app.use(express.json());
 
-app.get('/orders', (req, res) => {
-    res.send("Here is the list of all orders.");
+app.get('/', (req, res) => {
+    res.send("Welcome to the Student & Course Portal API!");
 });
 
-app.post('/orders', (req, res) => {
-    res.send("A new order has been created.");
+app.use('/students', studentRoutes);
+app.use('/courses', courseRoutes);
+
+app.use((req, res) => {
+    res.status(404).send("Page not found");
 });
 
-app.get('/users', (req, res) => {
-    res.send("Here is the list of all users.");
-});
-
-app.post('/users', (req, res) => {
-    res.send("A new user has been added.");
-});
-
-const PORT = 3000;
+// Start Server
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });

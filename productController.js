@@ -1,28 +1,18 @@
-const getProducts=(req,res)=>{
+const getAllProducts=(req,res)=>{
     res.send("Fetching all products")
 }
 
-const getProductsByID=(req,res)=>{
-    const {id}=req.params;
+const getProductById=(req,res)=>{
+    const id=req.params.id;
     res.send(`Fetching product with ID:${id}`);
 }
 
-const postProducts=(req,res)=>{
-    res.send("New product added");
-}
-
-const editProducts=(req,res)=>{
-    res.send("Put request called")
-}
-
-const deleteProducts=(req,res)=>{
-    res.send("Delete request called")
+const addProduct=(req,res)=>{
+    res.send("Adding a new product");
 }
 
 module.exports={
-    getProducts,
-    getProductsByID,
-    postProducts,
-    editProducts,
-    deleteProducts
+    getAllProducts,
+    getProductById,
+    addProduct
 }

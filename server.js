@@ -1,20 +1,11 @@
-const express = require('express');
-const userRoutes = require('./routes/userRoutes');
-const productRoutes = require('./routes/productRoutes');
-const cartRoutes = require('./routes/cartRoutes');
+const express=require('express');
+const app=express();
+const path=require('path');
 
-const app = express();
-const PORT = 4000;
+app.get("/product",(req,res)=>{
+    res.sendFile(path.join(__dirname,"view","product.html"));
+})
 
-app.use('/users', userRoutes);
-app.use('/products', productRoutes);
-app.use('/cart', cartRoutes);
-
-
-app.use((req, res) => {
-    res.status(404).send("Page not found");
-});
-
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+app.listen(3000,()=>{
+    console.log("Server is running");
+})

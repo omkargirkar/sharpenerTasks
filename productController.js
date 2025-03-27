@@ -10,12 +10,15 @@ const getProductById=(req,res)=>{
     res.send(`Fetching product with ID:${id}`);
 }
 
-const addProduct=(req,res)=>{
-    res.send("Adding a new product");
+const postProducts=(req,res)=>{
+    //res.send("Adding a new product");
+    const data=req.body;
+    //console.log(data);
+    res.json({value:data.productName});
 }
 
 module.exports={
     getAllProducts,
     getProductById,
-    addProduct
+    postProducts
 }

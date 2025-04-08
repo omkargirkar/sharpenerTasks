@@ -1,23 +1,13 @@
 const express = require('express');
-const studentRoutes = require('./routes/students');
-const courseRoutes = require('./routes/courses');
+const bodyParser = require('body-parser');
+const path = require('path');
+const expenseRoutes = require('./routes/expenseRoutes');
 
 const app = express();
-const PORT = 4000;
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static('public'));
 
-app.get('/', (req, res) => {
-    res.send("Welcome to the Student & Course Portal API!");
-});
+app.use(expenseRoutes);
 
-app.use('/students', studentRoutes);
-app.use('/courses', courseRoutes);
-
-app.use((req, res) => {
-    res.status(404).send("Page not found");
-});
-
-// Start Server
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+app.listen(3000, () => console.log('Server running at http://localhost:3000'));

@@ -1,63 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <title>Expense Tracker</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management</title>
+    <style>
+        li {
+          margin-bottom: 10px;
+        }
+    </style>  
 </head>
 
 <body>
-  <h2>Add Expense</h2>
-  <form action="/add-expense" method="POST">
-    <label for="amount">Amount:</label>
-    <input type="number" id="amount" name="amount" required>
-    <br><br>
+    <h1>Books</h1>
 
-    <label for="description">Description:</label>
-    <input type="text" id="description" name="description" required>
-    <br><br>
+    <form onsubmit="handleFormSubmit(event)">
+        <input type="text" name="bookName" placeholder="Please enter book name" required />
+        <button type="submit">Submit</button>
+    </form>
 
-    <label for="category">Category:</label>
-    <select id="category" name="category" required>
-      <option value="">--Select Category--</option>
-      <option value="Grocery">Grocery</option>
-      <option value="Electronic Device">Electronic Device</option>
-      <option value="Clothing">Clothing</option>
-      <option value="Food">Food</option>
-    </select>
-    <br><br>
+    <h2>Books Taken</h2>
+    <ul id="takenBooks"></ul>
 
+    <h2>Returned Books</h2>
+    <ul id="returnedBooks"></ul>
 
-    <button type="submit">Add Expense</button>
-  </form>
-  <ul id="expenseList"></ul>
-
-  <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      fetch('/expenses')
-        .then(response => response.json())
-        .then(data => {
-          const list = document.createElement('ul');
-          data.forEach(exp => {
-            const li = document.createElement('li');
-            li.textContent = `${exp.amount} - ${exp.description} (${exp.category})`;
-            const deleteBtn = document.createElement('button');
-            deleteBtn.textContent = 'Delete';
-            deleteBtn.onclick = () => {
-              fetch(`/expense/${exp.id}`, { method: 'DELETE' })
-                .then(res => res.json())
-                .then(data => {
-                  if (data.success) li.remove();
-                })
-                .catch(err => console.error('Error deleting expense:', err));
-            };
-
-            li.appendChild(deleteBtn);
-            list.appendChild(li);
-          });
-          document.body.appendChild(list);
-        })
-        .catch(err => console.error('Error loading expenses:', err));
-    });
-  </script>
+    <script src="index.js"></script>
 </body>
 </html>

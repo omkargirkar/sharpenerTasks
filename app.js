@@ -1,13 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const expenseRoutes = require('./routes/expenseRoutes');
+const bookRoutes = require('./routes/bookRoutes');
 
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static('public'));
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(expenseRoutes);
+app.use('/api/books', bookRoutes);
 
-app.listen(3000, () => console.log('Server running at http://localhost:3000'));
+app.listen(3000, () => {
+  console.log('Server is running on http://localhost:3000');
+});

@@ -1,12 +1,15 @@
 const db = require('../db');
+const bcrypt = require('bcrypt');
 
 exports.addUser = async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const [result] = await db.execute(
       'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
-      [username, email, password]
+      [username, email, hashedPassword]
     );
 
     const [newUser] = await db.execute('SELECT * FROM users WHERE id = ?', [result.insertId]);
@@ -41,8 +44,10 @@ exports.loginUser = async (req, res) => {
 
     const user = userResult[0];
 
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
     // If password does not match
-    if (user.password !== password) {
+    if (!passwordMatch) {
       return res.status(401).json({ error: 'Password incorrect. User not authorized.' });
     }
 

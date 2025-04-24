@@ -1,3 +1,7 @@
+//userController.js
+
+const jwt = require('jsonwebtoken');
+
 const db = require('../db');
 const bcrypt = require('bcrypt');
 
@@ -52,10 +56,20 @@ exports.loginUser = async (req, res) => {
     }
 
     // If both email and password match
+
+    //token created
+    const token = jwt.sign(
+      { userId: user.id, email: user.email },
+      'your_jwt_secret_key',
+      { expiresIn: '1h' }
+    );
+    
     res.status(200).json({
       message: 'User login successful',
+      token: token,
       user: { id: user.id, username: user.username, email: user.email }
     });
+    
 
   } catch (err) {
     console.error('Login error:', err);

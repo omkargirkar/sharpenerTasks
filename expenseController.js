@@ -1,24 +1,28 @@
+//expenseController.js
+
 const db = require('../db');
 
 // Create Expense
 exports.addExpense = async (req, res) => {
     const { amount, description, category } = req.body;
-    const sql = 'INSERT INTO expenses (amount, description, category) VALUES (?, ?, ?)';
+    const userId = req.user.userId;
+    const sql = 'INSERT INTO expenses (amount, description, category, userId) VALUES (?, ?, ?, ?)';
+    console.log("Received data:", { amount, description, category, userId });
     try {
-        const [result] = await db.query(sql, [amount, description, category]);
-        console.log('Expense added:', result);
-        res.redirect('/');
+        const [result] = await db.query(sql, [amount, description, category, userId]);
+        const [newExpense] = await db.execute('SELECT * FROM expenses WHERE id = ?', [result.insertId]);
+        res.status(201).json(newExpense[0]);
     } catch (err) {
-        console.error('Error adding expense:', err);
-        res.send('Something went wrong!');
+        res.status(500).json({ error: 'Failed to add expense' });
     }
 };
 
 // Get All Expenses
 exports.getAllExpenses = async (req, res) => {
-    const sql = 'SELECT * FROM expenses';
+    const userId = req.user.userId;
+    const sql = 'SELECT * FROM expenses where userId=?';
     try {
-        const [rows] = await db.query(sql);
+        const [rows] = await db.query(sql,[userId]);
         res.json(rows); // Send data as JSON
     } catch (err) {
         console.error('Error fetching expenses:', err);
@@ -28,13 +32,15 @@ exports.getAllExpenses = async (req, res) => {
 
 exports.deleteExpense = async (req, res) => {
     const { id } = req.params;
-    const sql = 'DELETE FROM expenses WHERE id = ?';
+    const userId = req.user.userId;
+    const sql = 'DELETE FROM expenses WHERE id = ? AND userID=?';
     try {
-        const [result] = await db.query(sql, [id]);
-        console.log('Expense deleted:', result);
-        res.json({ success: true });
+        const [result] = await db.query(sql, [id,userId]);
+        if (result.affectedRows === 0) {
+            return res.status(403).json({ error: 'Not authorized to delete this expense' });
+        }
+        res.status(200).json({ success: true });
     } catch (err) {
-        console.error('Error deleting expense:', err);
         res.status(500).json({ success: false });
     }
 };
